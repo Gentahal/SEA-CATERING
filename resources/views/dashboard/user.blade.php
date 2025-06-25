@@ -10,7 +10,7 @@
         @if ($subscriptions->isEmpty())
             <div class="empty-state text-center py-5">
                 <div class="empty-icon mb-4">
-                    <i class="fas fa-utensils fa-4x text-primary"></i>
+                    <i style="color: #2a9d8f" class="fas fa-utensils fa-4x "></i>
                 </div>
                 <h4 class="mb-3">No Active Subscriptions</h4>
                 <p class="text-muted mb-4">You don't have any active meal subscriptions yet</p>

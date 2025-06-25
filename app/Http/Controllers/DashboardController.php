@@ -10,8 +10,6 @@ class DashboardController extends Controller
 {
     public function userDashboard()
     {
-        // $subscription = Subscription::where('phone', auth()->user()->phone)->latest()->first();
-
         $subscriptions = Subscription::where('user_id', auth()->id())
             ->whereIn('status', ['active', 'paused'])
             ->latest()
