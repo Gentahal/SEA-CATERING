@@ -33,18 +33,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
-    
+
     Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
         Route::get('/', [SubscriptionController::class, 'create'])->name('create');
         Route::post('/', [SubscriptionController::class, 'store'])->name('store');
-        
-        Route::middleware('subscription.owner')->group(function () {
-            Route::post('/pause', [SubscriptionController::class, 'pause'])->name('pause');
-            Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
-            Route::post('/reactivate', [SubscriptionController::class, 'reactivate'])->name('reactivate');
-        });
+
+        Route::post('/{subscription}/pause', [DashboardController::class, 'pauseSubscription'])->name('pause');
+        Route::post('/{subscription}/cancel', [DashboardController::class, 'cancelSubscription'])->name('cancel');
+        Route::post('/{subscription}/resume', [DashboardController::class, 'resumeSubscription'])->name('resume');
     });
-    
+
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
     });
@@ -52,7 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('user')->prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'userDashboard'])->name('dashboard');
     });
-    
+
     Route::get('/dashboard', function () {
         return redirect()->route(auth()->user()->is_admin ? 'admin.dashboard' : 'user.dashboard');
     })->name('dashboard');
