@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TestimonialController extends Controller
 {
@@ -12,11 +13,9 @@ class TestimonialController extends Controller
      */
     public function index()
     {
-        $testimonials = Testimonial::where('approved', true)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $testimonials = Testimonial::get();
 
-        return view('contact.contact', compact('testimonials'));
+        return view('contact.testimonials', compact('testimonials'));
     }
 
     /**
@@ -32,20 +31,27 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'message' => 'required|string|min:10|max:1000',
-            'rating' => 'required|integer|between:1,5'
-        ]);
+        try {
+            Log::debug('Testimonial submission received', $request->all());
 
-        Testimonial::create([
-            'name' => $request->name,
-            'message' => $request->message,
-            'rating' => $request->rating,
-            'approved' => false, 
-        ]);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'message' => 'required|string|min:3|max:1000',
+                'rating' => 'required|integer|between:1,5'
+            ]);
 
-        return back()->with('success', 'Thank you for your testimonial! It will be visible after approval.');
+            Log::debug('Validation passed', $validated);
+
+            $testimonial = Testimonial::create([
+                'name' => $validated['name'],
+                'message' => $validated['message'],
+                'rating' => $validated['rating'],
+            ]);
+
+            return back()->with('success', 'Thank you for your testimonial! It will be visible after approval.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error submitting testimonial: ' . $e->getMessage());
+        }
     }
 
     /**

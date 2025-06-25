@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ProfileController;
@@ -17,12 +18,9 @@ use App\Http\Controllers\TestimonialController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::view('/menu', 'menu.menu')->name('menu');
-Route::view('/contact', 'contact.contact')->name('contact');
 
 Route::get('/contact-testimonials', [TestimonialController::class, 'index'])->name('contact.testimonials');
 Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');

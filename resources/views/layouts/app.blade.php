@@ -141,7 +141,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="/contact">
+                    <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="{{ route('contact.testimonials') }}">
                         <i class="fas fa-envelope me-1"></i> Contact Us
                     </a>
                 </li>

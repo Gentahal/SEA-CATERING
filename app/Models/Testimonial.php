@@ -15,6 +15,5 @@ class Testimonial extends Model
         'name',
         'message',
         'rating',
-        'approved'
     ];
 }
