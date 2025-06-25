@@ -105,14 +105,15 @@
                                     <div class="star-rating">
                                         @for ($i = 5; $i >= 1; $i--)
                                             <input type="radio" id="star{{ $i }}" name="rating"
-                                                value="{{ $i }}" {{ $i == 5 ? 'required' : '' }}>
-                                            <label for="star{{ $i }}" title="{{ $i }} stars"><i
-                                                    class="fas fa-star"></i></label>
+                                                value="{{ $i }}" required>
+                                            <label for="star{{ $i }}" title="{{ $i }} stars">
+                                                <i class="fas fa-star"></i>
+                                            </label>
                                         @endfor
                                     </div>
-                                    <div class="invalid-feedback d-block">
-                                        Please select a rating.
-                                    </div>
+                                    @error('rating')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <button type="submit" class="btn btn-primary px-4 py-2">
@@ -150,8 +151,8 @@
                                                 alt="{{ $testimonial->name }}">
                                             <div>
                                                 <h5 class="mb-1">{{ $testimonial->name }}</h5>
-                                                <small
-                                                    class="text-muted">{{ $testimonial->created_at->format('M d, Y') }}</small>
+                                                {{-- <small
+                                                    class="text-muted">{{ $testimonial->created_at->format('M d, Y') }}</small> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -196,6 +197,20 @@
         .star-rating input:not(:checked)~label:hover,
         .star-rating input:not(:checked)~label:hover~label {
             color: #fdca40;
+        }
+
+        .star-rating.was-validated:not(:has(input:checked)) {
+            border: 1px solid #dc3545;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .star-rating.was-validated:not(:has(input:checked))::after {
+            content: "Please select a rating";
+            color: #dc3545;
+            font-size: 0.875em;
+            display: block;
+            margin-top: 5px;
         }
 
         .star-rating input:checked~label {
@@ -264,17 +279,26 @@
                 stars.forEach(star => {
                     star.addEventListener('change', function() {
                         const rating = this.value;
-                        const starLabels = document.querySelectorAll('.star-rating label');
-
-                        starLabels.forEach((label, index) => {
-                            if (index >= (5 - rating)) {
-                                label.style.color = '#fdca40';
-                            } else {
-                                label.style.color = '#ddd';
-                            }
+                        document.querySelectorAll('.star-rating label').forEach((label, index) => {
+                            label.style.color = index >= (5 - rating) ? '#fdca40' : '#ddd';
                         });
                     });
                 });
+
+                const form = document.querySelector('.needs-validation');
+                if (form) {
+                    form.addEventListener('submit', function(event) {
+                        const ratingSelected = document.querySelector('input[name="rating"]:checked');
+
+                        if (!ratingSelected) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            document.querySelector('.star-rating').classList.add('was-validated');
+                        }
+
+                        form.classList.add('was-validated');
+                    }, false);
+                }
             });
         </script>
     @endpush

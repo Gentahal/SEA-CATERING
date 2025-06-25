@@ -73,10 +73,11 @@
                             <h3 class="fw-bold mb-4"><i style="color: #2a9d8f" class="fas fa-comment-dots me-2"></i> Share
                                 Your Experience</h3>
 
-                            <form class="needs-validation" novalidate>
+                            <form class="needs-validation" action="{{ route('testimonials.store') }}" method="POST" novalidate>
+                                @csrf
                                 <div class="mb-4">
                                     <label for="name" class="form-label fw-bold">Your Name</label>
-                                    <input type="text" class="form-control py-2" id="name"
+                                    <input name="name" type="text" class="form-control py-2" id="name"
                                         placeholder="Enter your name" required>
                                     <div class="invalid-feedback">
                                         Please provide your name.
@@ -85,7 +86,7 @@
 
                                 <div class="mb-4">
                                     <label for="review" class="form-label fw-bold">Your Review</label>
-                                    <textarea class="form-control py-2" id="review" rows="3" placeholder="Share your experience with SEA Catering"
+                                    <textarea name="message" class="form-control py-2" id="review" rows="3" placeholder="Share your experience with SEA Catering"
                                         required></textarea>
                                     <div class="invalid-feedback">
                                         Please write your review.
