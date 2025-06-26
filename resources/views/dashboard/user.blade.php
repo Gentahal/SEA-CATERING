@@ -1,6 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="container py-5">
         <div class="dashboard-header mb-5">
             <h2 class="fw-light mb-3">My Subscriptions</h2>

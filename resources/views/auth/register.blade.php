@@ -15,8 +15,8 @@
                         <span class="input-icon">
                             <i class="fas fa-user"></i>
                         </span>
-                        <input id="name" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" 
-                               class="form-input" placeholder="Enter your full name"/>
+                        <input id="name" type="text" name="name" :value="old('name')" required autofocus
+                            autocomplete="name" class="form-input" placeholder="Enter your full name" />
                     </div>
                     <x-input-error :messages="$errors->get('name')" class="form-error" />
                 </div>
@@ -27,8 +27,8 @@
                         <span class="input-icon">
                             <i class="fas fa-envelope"></i>
                         </span>
-                        <input id="email" type="email" name="email" :value="old('email')" required autocomplete="username" 
-                               class="form-input" placeholder="Enter your email"/>
+                        <input id="email" type="email" name="email" :value="old('email')" required
+                            autocomplete="username" class="form-input" placeholder="Enter your email" />
                     </div>
                     <x-input-error :messages="$errors->get('email')" class="form-error" />
                 </div>
@@ -39,8 +39,8 @@
                         <span class="input-icon">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input id="password" type="password" name="password" required autocomplete="new-password" 
-                               class="form-input" placeholder="Create a password"/>
+                        <input id="password" type="password" name="password" required autocomplete="new-password"
+                            class="form-input" placeholder="Create a password" />
                         <button type="button" class="password-toggle">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -54,8 +54,8 @@
                         <span class="input-icon">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input id="password_confirmation" type="password" name="password_confirmation" required 
-                               autocomplete="new-password" class="form-input" placeholder="Confirm your password"/>
+                        <input id="password_confirmation" type="password" name="password_confirmation" required
+                            autocomplete="new-password" class="form-input" placeholder="Confirm your password" />
                         <button type="button" class="password-toggle">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -86,48 +86,58 @@
             --gray-color: #6c757d;
             --light-gray: #e9ecef;
         }
-        
+
         .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #fefefe;
         }
-        
+
         .auth-card {
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 450px;
-            padding: 2.5rem;
+            max-width: 650px;
+            /* diperbesar dari 450px */
+            padding: 3rem 3.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
+
         .auth-card:hover {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
         }
-        
+
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 2rem;
+                max-width: 95%;
+            }
+        }
+
+
         .auth-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        
+
         .auth-header h2 {
             color: var(--secondary-color);
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-        
+
         .auth-header p {
             color: var(--gray-color);
             font-size: 0.95rem;
         }
-        
+
         .form-group {
             margin-bottom: 1.5rem;
         }
-        
+
         .form-label {
             display: block;
             margin-bottom: 0.5rem;
@@ -135,20 +145,20 @@
             font-weight: 500;
             font-size: 0.95rem;
         }
-        
+
         .input-group {
             position: relative;
             display: flex;
             align-items: center;
         }
-        
+
         .input-icon {
             position: absolute;
             left: 15px;
             color: var(--gray-color);
             font-size: 0.95rem;
         }
-        
+
         .form-input {
             width: 100%;
             padding: 12px 15px 12px 45px;
@@ -158,13 +168,13 @@
             transition: all 0.3s ease;
             background-color: #fefefe;
         }
-        
+
         .form-input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
         }
-        
+
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -174,13 +184,13 @@
             cursor: pointer;
             font-size: 0.95rem;
         }
-        
+
         .form-error {
             color: #dc3545;
             font-size: 0.85rem;
             margin-top: 0.25rem;
         }
-        
+
         .auth-button {
             width: 100%;
             padding: 12px;
@@ -196,27 +206,27 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .auth-button:hover {
             background-color: #21867a;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(42, 157, 143, 0.2);
         }
-        
+
         .auth-footer {
             text-align: center;
             margin-top: 1.5rem;
             font-size: 0.95rem;
             color: var(--gray-color);
         }
-        
+
         .auth-link {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
         }
-        
+
         .auth-link:hover {
             color: #21867a;
             text-decoration: underline;
@@ -228,7 +238,7 @@
             button.addEventListener('click', function() {
                 const input = this.parentElement.querySelector('input');
                 const icon = this.querySelector('i');
-                
+
                 if (input.type === 'password') {
                     input.type = 'text';
                     icon.classList.replace('fa-eye', 'fa-eye-slash');
