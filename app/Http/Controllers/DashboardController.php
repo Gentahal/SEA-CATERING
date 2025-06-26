@@ -74,18 +74,74 @@ class DashboardController extends Controller
             abort(403);
         }
 
-        $start = $request->input('start_date') ?? now()->subMonth()->toDateString();
-        $end = $request->input('end_date') ?? now()->toDateString();
+        $validated = $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date'
+        ]);
 
-        $subs = Subscription::whereBetween('created_at', [$start, $end]);
+        $start = $validated['start_date'] ?? now()->subMonth()->startOfDay()->toDateString();
+        $end = $validated['end_date'] ?? now()->endOfDay()->toDateString();
 
-        $totalNew = $subs->count();
-        $totalMRR = $subs->where('status', 'active')->sum('total_price');
-        $reactivations = Subscription::where('status', 'active')
-            ->whereBetween('updated_at', [$start, $end])
-            ->whereNotNull('pause_end')->count();
-        $totalActive = Subscription::where('status', 'active')->count();
+        $subscriptionsQuery = Subscription::query();
 
-        return view('dashboard.admin', compact('totalNew', 'totalMRR', 'reactivations', 'totalActive', 'start', 'end'));
+        $metrics = [
+            'totalNew' => $subscriptionsQuery->count(),
+            'totalMRR' => $subscriptionsQuery->clone()->where('status', 'active')->sum('total_price'),
+            'reactivations' => Subscription::where('status', 'active')
+                ->whereBetween('updated_at', [$start, $end])
+                ->whereNotNull('pause_end')
+                ->count(),
+            'totalActive' => Subscription::where('status', 'active')->count(),
+
+            'previousPeriodNew' => Subscription::whereBetween(
+                'created_at',
+                [now()->parse($start)->subMonth()->toDateString(), now()->parse($start)->subDay()->toDateString()]
+            )->count(),
+            'growthPercentage' => 0 
+        ];
+
+        if ($metrics['previousPeriodNew'] > 0) {
+            $metrics['growthPercentage'] = (($metrics['totalNew'] - $metrics['previousPeriodNew']) / $metrics['previousPeriodNew']) * 100;
+        }
+
+        $chartData = $this->getSubscriptionChartData($start, $end);
+
+        return view('dashboard.admin', array_merge([
+            'start' => $start,
+            'end' => $end,
+        ], $metrics, $chartData));
+    }
+
+    protected function getSubscriptionChartData($start, $end)
+    {
+        $days = now()->parse($start)->diffInDays(now()->parse($end)) + 1;
+
+        if ($days <= 31) {
+            $format = 'Y-m-d';
+            $groupBy = 'DATE(created_at)';
+        } elseif ($days <= 365) {
+            $format = 'Y-W';
+            $groupBy = 'YEARWEEK(created_at)';
+        } else {
+            $format = 'Y-m';
+            $groupBy = 'DATE_FORMAT(created_at, "%Y-%m")';
+        }
+
+        $subscriptions = Subscription::selectRaw("
+            {$groupBy} as period,
+            COUNT(*) as count,
+            SUM(CASE WHEN status = 'active' THEN total_price ELSE 0 END) as revenue
+        ")
+            ->whereBetween('created_at', [$start, $end])
+            ->groupBy('period')
+            ->orderBy('period')
+            ->get();
+
+        return [
+            'chartLabels' => $subscriptions->map(fn($item) => $item->period),
+            'subscriptionCounts' => $subscriptions->pluck('count'),
+            'revenueData' => $subscriptions->pluck('revenue'),
+            'chartType' => $days <= 31 ? 'day' : ($days <= 365 ? 'week' : 'month')
+        ];
     }
 }
