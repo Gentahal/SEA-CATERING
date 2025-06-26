@@ -38,18 +38,14 @@
 3. Buat file .env dan konfigurasi:
     ```bash
    cp .env.example .env
-
-4. Buat file .env dan konfigurasi:
-    ```bash
-   cp .env.example .env
     
-   *Lalu isi kredensial database dan environment sesuai kebutuhan.
+   *Sesuaikan ENV anda.*
 
-5. Generate application key:
+4. Generate application key:
     ```bash
    php artisan key:generate
 
-6. Jalankan migration dan seeder:
+5. Jalankan migration dan seeder:
     ```bash
     php artisan migrate --seed
 
