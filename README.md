@@ -19,6 +19,7 @@
 
 ### 📌 Prerequisites
 - PHP 8.0+
+- Laravel 10
 - Composer
 - MySQL 5.7+
 - Node.js
